@@ -1,0 +1,10 @@
+query {
+  simple {
+    field1
+    field2
+    field3
+    field4 {
+      nestedField1
+    }
+  }
+}

@@ -1,0 +1,14 @@
+query {
+	simple2 {
+    field1
+    field2
+    fieldWithAuth
+  }
+}
+
+"""
+Header to use
+{
+ "authorization": "this is token"
+}
+"""
