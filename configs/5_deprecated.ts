@@ -1,6 +1,12 @@
 import { ApolloServer, gql } from "apollo-server";
 import { config } from "./shared";
 
+/**
+ * - Fragment
+ * - Different file for each query and fragment
+ * - Sharing fragment by importing
+ */
+
 const typeDefs = gql`
   type Progress {
     status: String!
@@ -39,15 +45,17 @@ export const server = new ApolloServer({
 
 /*
 
-query {
+query first {
   plan {
     name
     progress {
       ...progressExample
     }
   }
+}
 
-  progress {
+query second {
+   progress {
     ...progressExample
   }
 }
