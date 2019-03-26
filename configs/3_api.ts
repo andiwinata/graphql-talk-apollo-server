@@ -57,9 +57,10 @@ export const server = new ApolloServer({
   typeDefs,
   resolvers: {
     Query: {
-      popularAnimalByCity: () => getAnimals()
+      popularAnimalByCity: () => getAnimals() // e.g. [{ animal: 'Lion', cityId: '123' }, { animal: 'Elephant', cityId: '234' }]
     },
     PopularAnimalByCity: {
+      // parent is e.g. { animal: 'Lion', cityId: '123' }
       animal: parent => parent.animal,
       city: parent => getCity(parent.cityId)
     }
