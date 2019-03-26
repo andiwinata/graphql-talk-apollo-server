@@ -2,7 +2,6 @@
   "name": "graphql-talk-apollo-server",
   "description": "",
   "dependencies": {
-    "apollo-datasource-rest": "latest",
     "apollo-server": "2.1.0",
     "chance": "1.0.18",
     "graphql": "14.0.2",
