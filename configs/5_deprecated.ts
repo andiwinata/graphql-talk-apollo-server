@@ -42,15 +42,19 @@ export const server = new ApolloServer({
 query {
   plan {
     name
-		progress {
-      status
-      progress
+    progress {
+      ...progressExample
     }
   }
-  
+
   progress {
-    status
+    ...progressExample
   }
+}
+
+fragment progressExample on Progress {
+  status
+  progress
 }
 
 */
