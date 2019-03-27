@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer, gql } from "apollo-server-express";
 import { config, chance, delay } from "./shared";
 
 // Animal API
@@ -35,7 +35,7 @@ const getCity = async (id: string): Promise<City> => {
 
 // GraphQL stuffs
 
-const typeDefs = gql`
+export const typeDefs = gql`
   type City {
     id: ID!
     name: String!
@@ -52,19 +52,21 @@ const typeDefs = gql`
   }
 `;
 
+export const resolvers = {
+  Query: {
+    popularAnimalByCity: () => getAnimals() // e.g. [{ animal: 'Lion', cityId: '123' }, { animal: 'Elephant', cityId: '234' }]
+  },
+  PopularAnimalByCity: {
+    // parent is e.g. { animal: 'Lion', cityId: '123' }
+    animal: parent => parent.animal,
+    city: parent => getCity(parent.cityId)
+  }
+};
+
 export const server = new ApolloServer({
   ...config,
   typeDefs,
-  resolvers: {
-    Query: {
-      popularAnimalByCity: () => getAnimals() // e.g. [{ animal: 'Lion', cityId: '123' }, { animal: 'Elephant', cityId: '234' }]
-    },
-    PopularAnimalByCity: {
-      // parent is e.g. { animal: 'Lion', cityId: '123' }
-      animal: parent => parent.animal,
-      city: parent => getCity(parent.cityId)
-    }
-  }
+  resolvers
 });
 
 /*

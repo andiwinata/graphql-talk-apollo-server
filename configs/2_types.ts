@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer, gql } from "apollo-server-express";
 import { config } from "./shared";
 
 /**
@@ -9,7 +9,7 @@ import { config } from "./shared";
  * - GraphQL Named query and variable
  */
 
-const typeDefs = gql`
+export const typeDefs = gql`
   type Plan {
     id: ID!
     name: String!
@@ -26,33 +26,35 @@ const typeDefs = gql`
   }
 `;
 
+export const resolvers = {
+  Query: {
+    plan: () => ({
+      id: "plan-id-1",
+      name: "this is plan name"
+    }),
+    progress: () => ({ baseProgress: 20 })
+  },
+  Progress: {
+    status: () => "IN_PROGRESS",
+    progress: parent => parent.baseProgress + 10.5
+  }
+};
+
 export const server = new ApolloServer({
   ...config,
   typeDefs,
-  resolvers: {
-    Query: {
-      plan: () => ({
-        id: "plan-id-1",
-        name: "this is plan name"
-      }),
-      progress: () => ({ baseProgress: 20 })
-    },
-    Progress: {
-      status: () => "IN_PROGRESS",
-      progress: (parent) => parent.baseProgress + 10.5
-    }
-  }
+  resolvers
 });
 
 /*
 
-query {
+query first {
   plan(id: "123") {
     id
   }
 }
 
-query {
+query second {
   plan(id: "123") {
     id
     name

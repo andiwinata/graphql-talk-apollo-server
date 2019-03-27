@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer, gql } from "apollo-server-express";
 import { config } from "./shared";
 
 /**
@@ -7,7 +7,7 @@ import { config } from "./shared";
  * - Sharing fragment by importing
  */
 
-const typeDefs = gql`
+export const typeDefs = gql`
   type Progress {
     status: String!
     progress: Float!
@@ -15,7 +15,10 @@ const typeDefs = gql`
 
   type Plan {
     name: String!
-    progress: Progress @deprecated(reason: "Use top level progress; note: this directive is not in official spec")
+    progress: Progress
+      @deprecated(
+        reason: "Use top level progress; note: this directive is not in official spec"
+      )
   }
 
   type Query {
@@ -24,23 +27,25 @@ const typeDefs = gql`
   }
 `;
 
+export const resolvers = {
+  Query: {
+    progress: () => ({}),
+    plan: () => ({})
+  },
+  Plan: {
+    name: () => "plan name",
+    progress: () => ({})
+  },
+  Progress: {
+    status: () => "IN_PROGRESS",
+    progress: () => 50.12
+  }
+};
+
 export const server = new ApolloServer({
   ...config,
   typeDefs,
-  resolvers: {
-    Query: {
-      progress: () => ({}),
-      plan: () => ({})
-    },
-    Plan: {
-      name: () => "plan name",
-      progress: () => ({})
-    },
-    Progress: {
-      status: () => "IN_PROGRESS",
-      progress: () => 50.12
-    }
-  }
+  resolvers
 });
 
 /*

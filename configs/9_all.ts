@@ -1,6 +1,11 @@
-import { ApolloServer, gql } from "apollo-server";
-import { getCat } from "../api/cat";
-import { config } from './shared';
+import { ApolloServer, gql } from "apollo-server-express";
+import { config } from "./shared";
+
+const getCat = async () => [
+  {
+    name: "neko"
+  }
+];
 
 const simpleSchema = gql`
   type Field4 {
@@ -57,7 +62,7 @@ export const server = new ApolloServer({
         field1: "Simple 2 field 1",
 
         field2: Promise.resolve(15.23),
-        
+
         fieldWithAuth: context.token || "no token provided"
       }),
 
@@ -75,8 +80,8 @@ export const server = new ApolloServer({
       field2: () => null,
       field3: () => Promise.resolve(5),
       field4: () => ({ param: "hehe", nestedField1: "overriden by children" })
-    },
-  },
+    }
+  }
 });
 
 /*

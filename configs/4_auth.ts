@@ -1,11 +1,22 @@
-import { ApolloServer, gql, AuthenticationError } from "apollo-server";
+import { ApolloServer, gql, AuthenticationError } from "apollo-server-express";
 import { config } from "./shared";
 
-const typeDefs = gql`
+export const typeDefs = gql`
   type Query {
     protected: String!
   }
 `;
+
+export const resolvers = {
+  Query: {
+    protected: (_parent, _args, context) => {
+      if (!context.token) {
+        throw new AuthenticationError("no token exists");
+      }
+      return `Your token is ${context.token}`;
+    }
+  }
+};
 
 export const server = new ApolloServer({
   ...config,
@@ -15,16 +26,7 @@ export const server = new ApolloServer({
     return { token };
   },
   typeDefs,
-  resolvers: {
-    Query: {
-      protected: (_parent, _args, context) => {
-        if (!context.token) {
-          throw new AuthenticationError("no token exists");
-        }
-        return `Your token is ${context.token}`;
-      }
-    }
-  }
+  resolvers
 });
 
 /*
