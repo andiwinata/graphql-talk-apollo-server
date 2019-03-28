@@ -10,6 +10,17 @@ import { config } from "./shared";
  */
 
 export const typeDefs = gql`
+  type Query {
+    """
+    Returns plan
+    """
+    plan(id: ID!): Plan
+    """
+    Returns progress of plan id
+    """
+    progress(id: ID!): Progress
+  }
+
   type Plan {
     id: ID!
     name: String!
@@ -17,12 +28,7 @@ export const typeDefs = gql`
 
   type Progress {
     status: String!
-    progress: Float!
-  }
-
-  type Query {
-    plan(id: ID!): Plan
-    progress(id: ID!): Progress
+    progressNum: Float!
   }
 `;
 
@@ -36,7 +42,7 @@ export const resolvers = {
   },
   Progress: {
     status: () => "IN_PROGRESS",
-    progress: parent => parent.baseProgress + 10.5
+    progressNum: parent => parent.baseProgress + 10.5
   }
 };
 
@@ -69,7 +75,7 @@ query GetPlanProgress($id: ID!) {
   
   progress(id: $id) {
     status
-    progress
+    progressNum
   }
 }
 {

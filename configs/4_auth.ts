@@ -1,6 +1,11 @@
 import { ApolloServer, gql, AuthenticationError } from "apollo-server-express";
 import { config } from "./shared";
 
+/**
+ * - Context
+ * - Error in GraphQL
+ */
+
 export const typeDefs = gql`
   type Query {
     protected: String!

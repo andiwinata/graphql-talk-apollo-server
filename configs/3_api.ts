@@ -1,6 +1,10 @@
 import { ApolloServer, gql } from "apollo-server-express";
 import { config, chance, delay } from "./shared";
 
+/**
+ * - Composing multiple API to 1 query
+ */
+
 // Animal API
 
 type AnimalAndCity = {
@@ -8,6 +12,7 @@ type AnimalAndCity = {
   cityId: string;
 };
 
+// [{ animal: 'Lion', cityId: '123' }, { animal: 'Elephant', cityId: '234' }]
 const getAnimals = async (): Promise<Array<AnimalAndCity>> => {
   await delay(500);
   return Array.from({ length: 5 }, (_, id) => ({
@@ -24,6 +29,7 @@ type City = {
   country: string;
 };
 
+// { id: "123", name: "Sydney", country: "USA" }
 const getCity = async (id: string): Promise<City> => {
   await delay(500);
   return {
@@ -36,10 +42,8 @@ const getCity = async (id: string): Promise<City> => {
 // GraphQL stuffs
 
 export const typeDefs = gql`
-  type City {
-    id: ID!
-    name: String!
-    country: String!
+  type Query {
+    popularAnimalByCity: [PopularAnimalByCity!]!
   }
 
   type PopularAnimalByCity {
@@ -47,8 +51,10 @@ export const typeDefs = gql`
     city: City!
   }
 
-  type Query {
-    popularAnimalByCity: [PopularAnimalByCity!]!
+  type City {
+    id: ID!
+    name: String!
+    country: String!
   }
 `;
 

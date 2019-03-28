@@ -8,9 +8,14 @@ import { config } from "./shared";
  */
 
 export const typeDefs = gql`
+  type Query {
+    progress: Progress!
+    plan: Plan!
+  }
+
   type Progress {
     status: String!
-    progress: Float!
+    progressNum: Float!
   }
 
   type Plan {
@@ -20,26 +25,21 @@ export const typeDefs = gql`
         reason: "Use top level progress; note: this directive is not in official spec"
       )
   }
-
-  type Query {
-    progress: Progress!
-    plan: Plan!
-  }
 `;
 
 export const resolvers = {
   Query: {
-    progress: () => ({}),
+    progress: () => ({ args: 'top level' }),
     plan: () => ({})
+  },
+  Progress: {
+    status: (parent) => `${parent.args}: IN_PROGRESS`,
+    progressNum: () => 50.12
   },
   Plan: {
     name: () => "plan name",
-    progress: () => ({})
+    progress: () => ({ args: 'inside plan' })
   },
-  Progress: {
-    status: () => "IN_PROGRESS",
-    progress: () => 50.12
-  }
 };
 
 export const server = new ApolloServer({
@@ -51,23 +51,23 @@ export const server = new ApolloServer({
 /*
 
 query first {
-  plan {
-    name
-    progress {
-      ...progressExample
-    }
-  }
-}
-
-query second {
-   progress {
+  progress {
     ...progressExample
   }
 }
 
 fragment progressExample on Progress {
   status
-  progress
+  progressNum
+}
+
+query second {
+  plan {
+    name
+    progress {
+      ...progressExample
+    }
+  }
 }
 
 */
